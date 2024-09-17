@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "4b9b4091-4624-415c-83f8-de75c632c662",
+		"name": "BIBLIOTECA-IUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19302512"
+	},
+	"item": [
+		{
+			"name": "usuarios",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"codigo\" : \"10967153\",\r\n    \"nombre\" : \"Julio Martinez\",\r\n    \"telefono\" : \"603503127\",\r\n    \"direccion\" : \"Calle Regimiento ligero 13\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3002/api/v1/usuarios/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

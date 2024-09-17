@@ -1,11 +1,4 @@
-const dotenv = require('dotenv') // importando dotenv
-dotenv.config()
-const express = require('express')
-const app = express()
-
-// TODO: MIGRAR A app.js
-const { mongoConnect } = require('./databases/config')
-mongoConnect()
+const app =  require('./app')
 
 app.set('port', process.env.PORT || 3002)
 
