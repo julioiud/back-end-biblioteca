@@ -17,7 +17,8 @@ const UsuarioSchema = Schema({
         type: String
     },
     enabled: {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     // datos de auditoria
     fechaCreacion : {
