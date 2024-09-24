@@ -15,9 +15,6 @@ const LibroSchema = Schema({
         required : true,
         unique : [true, 'ISBN libro ya existe']
     },
-    direccion : {
-        type: String
-    },
     editorial : {
         type: Schema.Types.ObjectId,
         ref: 'Editorial'
@@ -40,7 +37,6 @@ const LibroSchema = Schema({
     fechaActualizacion : {
         type: Date
     },
-    
 })
 
 module.exports = model('Libro', LibroSchema)
