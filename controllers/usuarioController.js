@@ -54,7 +54,7 @@ const actualizarUsuario = async (req = request, res = response) => {
         data.fechaActualizacion = new Date()
         const usuario = 
             await Usuario.findByIdAndUpdate(id, data, {new : false})
-        return res.json(usuario)
+        return res.status(201).json(usuario)
     } catch(e) {
         console.log(e)
         return res.status(500).json({e})
@@ -71,7 +71,7 @@ const deshabilitarUsuarioPorID = async (req = request, res = response) => {
         data.fechaActualizacion = new Date()
         const usuario = 
             await Usuario.findByIdAndUpdate(id, data, {new : true})
-        return res.json(usuario)
+        return res.status(201).json(usuario)
     } catch(e) {
         console.log(e)
         return res.status(500).json({e})

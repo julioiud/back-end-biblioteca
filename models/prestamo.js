@@ -1,4 +1,6 @@
+const dayjs = require('dayjs')
 const { Schema, model } = require('mongoose')
+
 
 const PrestamoSchema = Schema({
     ejemplar : {
@@ -7,7 +9,7 @@ const PrestamoSchema = Schema({
         required: true
     },
     usuario : {
-        type: String,
+        type: Schema.Types.ObjectId,
         ref: 'Usuario',
         required : [true, 'Titulo debe tener un nombre']
     },
@@ -19,7 +21,7 @@ const PrestamoSchema = Schema({
     fechaADevolver : {
         type: Date,
         // calcular con 15+ días
-        default: (new Date()).getDate() + 15
+        default: dayjs().add(15, 'day')
     },
     fechaDevolucion : {
         type: Date
@@ -31,11 +33,12 @@ const PrestamoSchema = Schema({
     },
     multa : {
         type: Number,
-        // se calcular al hacer update con la devolución
+        // se calcular TODOS LOS DIAS A LAS 00:00
         default: 0
     },
     multaPagada : {
-      type: Boolean
+      type: Boolean,
+      default : true
     }
 })
 
