@@ -3,6 +3,31 @@ const Prestamo = require('../models/prestamo')
 const Usuario = require('../models/usuario')
 const Ejemplar = require('../models/ejemplar')
 const Gestor = require('../models/gestor')
+const schedule = require('node-schedule')
+const dayjs = require('dayjs')
+
+// TODO: USAR ESTE, U OPTAR POR ACTUALIZACIONES EN: CONSULTAS Y DEVOLUCIONES
+const job = schedule.scheduleJob(process.env.CRON, async () => {
+    console.log('Actualizando multas')
+    let prestamos = []
+    prestamos = await Prestamo.find({ fechaDevolucion: null })
+    const hoy = new Date()
+    prestamos.forEach(async (prestamo) => {
+        let multa = prestamo.multa
+        let multaPagada = prestamo.multaPagada
+        if (prestamo.fechaADevolver < hoy) {
+            // TODO: Tambien se puede restar fechas y multi por 1000
+            const dias = dayjs().diff(prestamo.fechaADevolver, 'day')
+            multa = dias*Number(process.env.MULTA_POR_DIA)
+            multaPagada = false
+        }
+        const cambios = {
+            multa,
+            multaPagada
+        }
+        await Prestamo.findByIdAndUpdate(prestamo._id, cambios)
+    })
+})
 
 const prestarEjemplar = 
     async (req = request, res = response) => {
@@ -98,7 +123,9 @@ const prestarEjemplar =
         data = {
             ejemplar : ejemplarBD,
             usuario : usuarioBD,
-            gestor : gestorBD
+            gestor : {
+                _id: gestorBD._id
+            }
         }
         const prestamo = new Prestamo(data)
         await prestamo.save()
@@ -111,17 +138,61 @@ const prestarEjemplar =
 
 const devolverEjemplar = 
     async (req = request, res = response) => {
+        try {
+            const uid = req.uid
+            const id = req.params.id
+            const gestorBD = await Gestor.findOne({documento : uid})
+            if(!gestorBD) {
+                return res.status(400).json({
+                    msj: 'Gestor no existe'
+                })
+            }
 
+            let data = {
+                gestorDevolucion: gestorBD
+            }
+
+            data.fechaDevolucion = new Date()
+   
+            const prestamo = 
+                await Prestamo.findByIdAndUpdate(id, data, {new : true})
+            return res.status(201).json(prestamo)
+        } catch(e) {
+            console.log(e)
+            return res.status(500).json({e})
+        }
 }
 
 const cobrarMulta = 
     async (req = request, res = response) => {
+        try {
+            const uid = req.uid
+            const id = req.params.id
+            const gestorBD = await Gestor.findOne({documento : uid})
+            if(!gestorBD) {
+                return res.status(400).json({
+                    msj: 'Gestor no existe'
+                })
+            }
 
+            let data = {
+                gestorCobra: gestorBD
+            }
+
+            data.multaPagada = true
+            data.fechaCobro = new Date()
+            const prestamo = 
+                await Prestamo.findByIdAndUpdate(id, data, {new : true})
+            return res.status(201).json(prestamo)
+        } catch(e) {
+            console.log(e)
+            return res.status(500).json({e})
+        }
 }
 
 const notificarMulta = 
     async (req = request, res = response) => {
-
+// NO
 }
 
 const consultaPrestamos = 
@@ -143,5 +214,6 @@ const consultaPrestamoPorUsuario =
 module.exports = {
     prestarEjemplar,
     devolverEjemplar,
-    consultaPrestamos
+    consultaPrestamos,
+    cobrarMulta
 }

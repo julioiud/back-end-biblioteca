@@ -38,7 +38,19 @@ const PrestamoSchema = Schema({
     },
     multaPagada : {
       type: Boolean,
+      // se calcular TODOS LOS DIAS A LAS 00:00
       default : true
+    },
+    gestorDevolucion : {
+        type: Schema.Types.ObjectId,
+        ref: 'Gestor'
+    },
+    gestorCobra : {
+        type: Schema.Types.ObjectId,
+        ref: 'Gestor'
+    },
+    fechaCobro : {
+        type: Date
     }
 })
 
