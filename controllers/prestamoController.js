@@ -120,7 +120,7 @@ const prestarEjemplar =
                 de ${process.env.HORA_INICIAL_PRESTAMO} a ${process.env.HORA_FINAL_PRESTAMOS}`
             })
         }
-        data = {
+        const data = {
             ejemplar : ejemplarBD,
             usuario : usuarioBD,
             gestor : {
@@ -206,14 +206,53 @@ const consultaPrestamos =
     }
 }
 
-const consultaPrestamoPorUsuario = 
+const consultaPrestamosPorUsuario = 
     async (req = request, res = response) => {
+    try {
+       const { id } = req.params
+       const usuarioBD = await Usuario.findById(id)
+       if(!usuarioBD) {
+        return res.status(400).json({
+            msj: 'Usuario no existe'
+        })
+       }
+       const prestamos = await Prestamo.find({usuario: usuarioBD})
+       return res.json(prestamos)
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({e})
+    } 
+}
 
+
+const consultaPrestamosPorUsuarioYEstado = 
+    async (req = request, res = response) => {
+    try {
+       const { id, estado } = req.params
+       const usuarioBD = await Usuario.findById(id)
+       const fechaDevolucion = 
+        (estado === 'activo') ? { $ne : null } : null // op. ternario
+       if(!usuarioBD) {
+        return res.status(400).json({
+            msj: 'Usuario no existe'
+        })
+       }
+       const prestamos = await Prestamo.find({
+            usuario : usuarioBD,
+            fechaDevolucion
+        })
+       return res.json(prestamos)
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({e})
+    } 
 }
 
 module.exports = {
     prestarEjemplar,
     devolverEjemplar,
     consultaPrestamos,
-    cobrarMulta
+    cobrarMulta,
+    consultaPrestamosPorUsuario,
+    consultaPrestamosPorUsuarioYEstado
 }

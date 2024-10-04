@@ -34,7 +34,7 @@ const crearGestor = async (req = request, res = response) => {
 
 const loguear = async (req = request, res = response) => {
     const {documento, password} = req.body
-
+    
     const gestorDB = await Gestor.findOne({
         documento
     })
