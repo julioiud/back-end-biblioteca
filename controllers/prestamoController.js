@@ -198,13 +198,28 @@ const notificarMulta =
 const consultaPrestamos = 
     async (req = request, res = response) => {
     try {
-      const prestamos = await Prestamo.find()
+      const prestamos = await Prestamo
+        .find()
+        .populate({
+            path: 'ejemplar',
+            select: '_id codigo'
+        })
+        .populate({
+            path: 'usuario',
+            select: '_id nombre'
+        })
+        .populate({
+            path: 'gestor',
+            select: '_id nombre'
+        })
        return res.json(prestamos)
      } catch(e) {
         console.log(e)
         return res.status(500).json({e})
     }
 }
+
+// TODO: CONSULTA PRESTAMOS PAGINADO
 
 const consultaPrestamosPorUsuario = 
     async (req = request, res = response) => {
@@ -216,7 +231,17 @@ const consultaPrestamosPorUsuario =
             msj: 'Usuario no existe'
         })
        }
-       const prestamos = await Prestamo.find({usuario: usuarioBD})
+       const prestamos = await Prestamo
+        .find({usuario: usuarioBD})
+        .populate({
+            path: 'ejemplar'
+        })
+        .populate({
+            path: 'usuario'
+        })
+        .populate({
+            path: 'gestor'
+        })
        return res.json(prestamos)
     } catch(e) {
         console.log(e)
