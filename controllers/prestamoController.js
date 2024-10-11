@@ -134,6 +134,7 @@ const prestarEjemplar =
         }
         const prestamo = new Prestamo(data)
         await prestamo.save()
+        await Ejemplar.findByIdAndUpdate(ejemplar._id, {prestado : true})
         return res.status(201).json(prestamo)
    } catch(e) {
       console.log(e)
@@ -161,7 +162,9 @@ const devolverEjemplar =
    
             const prestamo = 
                 await Prestamo.findByIdAndUpdate(id, data, {new : true})
-            return res.status(201).json(prestamo)
+            const ejemplar = prestamo.ejemplar
+                await Ejemplar.findByIdAndUpdate(ejemplar._id, {prestado : false})
+                return res.status(201).json(prestamo)
         } catch(e) {
             console.log(e)
             return res.status(500).json({e})

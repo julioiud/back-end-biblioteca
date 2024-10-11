@@ -23,6 +23,10 @@ const EjemplarSchema = Schema({
     },
     fechaActualizacion : {
         type: Date
+    },
+    prestado: {
+        type: Boolean,
+        default: false
     }
 })
 
