@@ -55,6 +55,11 @@ const prestarEjemplar =
                 msj: 'Usuario no existe'
             })
         }
+        if(!usuarioBD.enabled) {
+            return res.status(400).json({
+                msj: 'A este usuario no se le puede prestar'
+            })
+        }
         // 4. que sea un ejemplar valido
         const ejemplarBD = await Ejemplar.findById(ejemplar._id)
         if(!ejemplarBD) {
