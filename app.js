@@ -23,10 +23,12 @@ app.use(express.urlencoded({ extended: false}))
 const usuarios = require('./routes/usuario')
 const gestores = require('./routes/gestor')
 const prestamos = require('./routes/prestamo')
+const ejemplares = require('./routes/ejemplar')
 
 app.use('/api/v1/usuarios', usuarios)
 app.use('/api/v1/gestores', gestores)
 app.use('/api/v1/prestamos', prestamos)
+app.use('/api/v1/ejemplares', ejemplares)
 
 app.get('*', (req, res) => {
     return res.status(404).json({
